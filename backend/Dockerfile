@@ -14,12 +14,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python deps
-COPY backend/requirements.txt .
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Force rebuild when code changes
-COPY backend/start.sh /app/start.sh
-COPY backend/ /app/
+COPY start.sh /app/start.sh
+COPY . /app/
 
 # Permissions
 RUN chown -R appuser:appuser /app && chmod +x /app/start.sh
