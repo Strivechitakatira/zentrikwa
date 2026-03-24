@@ -111,9 +111,7 @@ export default function WhatsAppSetupCard({
       }
     };
     script.onerror = () => {
-      setServerError(
-        'Could not load Facebook SDK — check your internet connection or disable any ad blocker, then refresh.',
-      );
+      setServerError('Connection to Facebook failed. Please refresh the page and try again.');
     };
     document.body.appendChild(script);
 
@@ -341,14 +339,7 @@ export default function WhatsAppSetupCard({
             </div>
           )}
 
-          <div className="border-t border-gray-100 pt-4">
-            <button
-              onClick={() => setShowManual(true)}
-              className="w-full text-center text-xs text-gray-400 hover:text-gray-600 hover:underline"
-            >
-              Enter credentials manually instead
-            </button>
-          </div>
+          {/* Manual entry hidden — not suitable for non-technical users */}
         </div>
       ) : (
         /* Manual / advanced form */
