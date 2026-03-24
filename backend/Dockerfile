@@ -14,9 +14,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY backend/ .
 
-RUN chown -R appuser:appuser /app
+RUN chown -R appuser:appuser /app && chmod +x /app/start.sh
 USER appuser
 
 EXPOSE 8000
 
-CMD uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000} --workers 2
+ENTRYPOINT ["/app/start.sh"]
