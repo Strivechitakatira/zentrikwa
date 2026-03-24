@@ -69,27 +69,39 @@ export default function WhatsAppSetupCard({
   const [connecting, setConnecting] = useState(false);
   const [disconnecting, setDisconnecting] = useState(false);
   const [showManual, setShowManual] = useState(false);
+  const [fbLoaded, setFbLoaded] = useState(false);
   const wabaDataRef = useRef<{ phone_number_id: string; waba_id: string } | null>(null);
 
   // ── Load Facebook JS SDK ───────────────────────────────────────────────────
   useEffect(() => {
-    if (document.getElementById('facebook-jssdk')) return;
+    // SDK already initialised (e.g. HMR / component remount)
+    if (window.FB) {
+      setFbLoaded(true);
+      return;
+    }
 
-    window.fbAsyncInit = function () {
+    const initFB = () => {
       window.FB.init({
         appId: metaAppId,
         autoLogAppEvents: true,
         xfbml: true,
         version: 'v18.0',
       });
+      setFbLoaded(true);
     };
 
-    const script = document.createElement('script');
-    script.id = 'facebook-jssdk';
-    script.src = 'https://connect.facebook.net/en_US/sdk.js';
-    script.async = true;
-    script.defer = true;
-    document.body.appendChild(script);
+    if (document.getElementById('facebook-jssdk')) {
+      // Script tag exists but FB not yet on window — wait for it
+      window.fbAsyncInit = initFB;
+    } else {
+      window.fbAsyncInit = initFB;
+      const script = document.createElement('script');
+      script.id = 'facebook-jssdk';
+      script.src = 'https://connect.facebook.net/en_US/sdk.js';
+      script.async = true;
+      script.defer = true;
+      document.body.appendChild(script);
+    }
 
     // Listen for WA_EMBEDDED_SIGNUP message to capture waba_id + phone_number_id
     const handleMessage = (event: MessageEvent) => {
@@ -113,11 +125,6 @@ export default function WhatsAppSetupCard({
 
   // ── Embedded Signup handler ────────────────────────────────────────────────
   const handleEmbeddedSignup = () => {
-    if (!window.FB) {
-      setServerError('Facebook SDK not loaded yet — please wait a moment and try again.');
-      return;
-    }
-
     setServerError(null);
     wabaDataRef.current = null;
 
@@ -288,13 +295,18 @@ export default function WhatsAppSetupCard({
           {/* Primary CTA — Embedded Signup */}
           <button
             onClick={handleEmbeddedSignup}
-            disabled={connecting}
+            disabled={!fbLoaded || connecting}
             className="flex w-full items-center justify-center gap-3 rounded-md bg-[#1877F2] px-4 py-3 text-sm font-semibold text-white hover:bg-[#166fe5] disabled:opacity-60"
           >
             {connecting ? (
               <>
                 <Spinner />
                 Connecting…
+              </>
+            ) : !fbLoaded ? (
+              <>
+                <Spinner />
+                Loading…
               </>
             ) : (
               <>
