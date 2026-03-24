@@ -141,8 +141,17 @@ export default function WhatsAppSetupCard({
     setConnecting(true);
     wabaDataRef.current = null;
 
+    // If popup is blocked, the callback never fires — reset after 6s
+    const popupTimeout = setTimeout(() => {
+      setConnecting(false);
+      setServerError(
+        'No popup appeared. Click the blocked popup icon in your browser address bar, allow popups for this site, then try again.',
+      );
+    }, 6000);
+
     window.FB.login(
       async (response: FacebookLoginResponse) => {
+        clearTimeout(popupTimeout);
         setConnecting(false);
         if (!response.authResponse?.code) {
           if (response.status !== 'connected') {
