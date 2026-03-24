@@ -183,14 +183,8 @@ export default function WhatsAppSetupCard({
         }
       },
       {
-        config_id: configId,
+        scope: 'whatsapp_business_management,whatsapp_business_messaging',
         response_type: 'code',
-        override_default_response_type: true,
-        extras: {
-          setup: {},
-          featureType: '',
-          sessionInfoVersion: '2',
-        },
       },
     );
   };
