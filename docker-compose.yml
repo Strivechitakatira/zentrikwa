@@ -1,0 +1,103 @@
+services:
+
+  # ── FastAPI Application ───────────────────────────────────────────────────────
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: conva-api
+    ports:
+      - "8000:8000"
+    env_file: ./backend/.env
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app          # Hot reload in dev
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # ── Celery Worker (async task processing) ────────────────────────────────────
+  worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: conva-worker
+    env_file: ./backend/.env
+    command: >
+      celery -A app.worker worker
+      --loglevel=info
+      --concurrency=2
+      --max-tasks-per-child=100
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+    restart: unless-stopped
+
+  # ── Celery Beat (periodic task scheduler) ────────────────────────────────────
+  beat:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: conva-beat
+    env_file: ./backend/.env
+    command: >
+      celery -A app.worker beat
+      --loglevel=info
+      --schedule=/tmp/celerybeat-schedule
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+      - celerybeat_data:/tmp    # Persist beat schedule between restarts
+    restart: unless-stopped
+
+  # ── Redis (Celery broker + result backend) ────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: conva-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
+  # ── Flower (Celery monitoring UI) — local dev only ─────────────────────────
+  # Accessible at http://localhost:5555
+  # Remove or comment out in production
+  flower:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: conva-flower
+    env_file: ./backend/.env
+    command: celery -A app.worker flower --port=5555 --loglevel=info
+    ports:
+      - "5555:5555"
+    depends_on:
+      - redis
+      - worker
+    restart: unless-stopped
+
+volumes:
+  redis_data:
+  celerybeat_data:
+
+networks:
+  default:
+    name: conva-network

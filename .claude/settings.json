@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Edit(/.claude/skills/db-schema-rls/**)",
+      "Edit(/.claude/skills/security/**)",
+      "Edit(/.claude/skills/devops/**)",
+      "Skill(conva-feature)",
+      "Skill(conva-feature:*)",
+      "Skill(devops)",
+      "Skill(devops:*)"
+    ]
+  }
+}
