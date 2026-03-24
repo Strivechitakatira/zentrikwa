@@ -74,13 +74,7 @@ export default function WhatsAppSetupCard({
 
   // ── Load Facebook JS SDK ───────────────────────────────────────────────────
   useEffect(() => {
-    // SDK already initialised (e.g. HMR / component remount)
-    if (window.FB) {
-      setFbLoaded(true);
-      return;
-    }
-
-    const initFB = () => {
+    const initSDK = () => {
       window.FB.init({
         appId: metaAppId,
         autoLogAppEvents: true,
@@ -90,18 +84,38 @@ export default function WhatsAppSetupCard({
       setFbLoaded(true);
     };
 
-    if (document.getElementById('facebook-jssdk')) {
-      // Script tag exists but FB not yet on window — wait for it
-      window.fbAsyncInit = initFB;
-    } else {
-      window.fbAsyncInit = initFB;
-      const script = document.createElement('script');
-      script.id = 'facebook-jssdk';
-      script.src = 'https://connect.facebook.net/en_US/sdk.js';
-      script.async = true;
-      script.defer = true;
-      document.body.appendChild(script);
+    // Already loaded (remount / HMR)
+    if (window.FB) {
+      initSDK();
+      return;
     }
+
+    // Script already in DOM — SDK is mid-load, set callback and wait
+    if (document.getElementById('facebook-jssdk')) {
+      window.fbAsyncInit = initSDK;
+      return;
+    }
+
+    // Fresh load — inject script
+    window.fbAsyncInit = initSDK;
+    const script = document.createElement('script');
+    script.id = 'facebook-jssdk';
+    script.src = 'https://connect.facebook.net/en_US/sdk.js';
+    script.async = true;
+    script.defer = true;
+    // onload fires when script finishes parsing — FB calls fbAsyncInit itself,
+    // but if it doesn't (cached / timing), we call it manually here.
+    script.onload = () => {
+      if (window.FB && !document.getElementById('fb-sdk-ready')) {
+        initSDK();
+      }
+    };
+    script.onerror = () => {
+      setServerError(
+        'Could not load Facebook SDK — check your internet connection or disable any ad blocker, then refresh.',
+      );
+    };
+    document.body.appendChild(script);
 
     // Listen for WA_EMBEDDED_SIGNUP message to capture waba_id + phone_number_id
     const handleMessage = (event: MessageEvent) => {
