@@ -1,5 +1,6 @@
-RUN echo "build version 2"
+
 FROM python:3.12-slim
+RUN echo "build version 2"
 
 # Create non-root user
 RUN groupadd -r appuser && useradd -r -g appuser appuser
