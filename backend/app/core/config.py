@@ -38,7 +38,9 @@ class Settings(BaseSettings):
     ENVIRONMENT: Literal["development", "staging", "production"] = "development"
     JWT_ALGORITHM: str = "HS256"
     FRONTEND_URL: str = "http://localhost:3000"
-    ALLOWED_ORIGINS: list[str] = ["http://localhost:3000"]
+    # Store as plain string — avoids pydantic-settings JSON-parsing list[str]
+    # Accepts: comma-separated "https://a.com,https://b.com" or single URL
+    ALLOWED_ORIGINS: str = "http://localhost:3000"
 
     # Payments (empty string = not configured)
     PAYNOW_INTEGRATION_ID: str = ""
@@ -61,12 +63,18 @@ class Settings(BaseSettings):
             )
         return v
 
-    @field_validator("ALLOWED_ORIGINS", mode="before")
-    @classmethod
-    def parse_origins(cls, v: str | list[str]) -> list[str]:
-        if isinstance(v, str):
-            return [origin.strip() for origin in v.split(",") if origin.strip()]
-        return v
+    @property
+    def allowed_origins_list(self) -> list[str]:
+        """Parse ALLOWED_ORIGINS string into a list. Handles comma-separated values."""
+        raw = self.ALLOWED_ORIGINS.strip()
+        # Handle JSON array format e.g. '["https://a.com"]'
+        if raw.startswith("["):
+            import json
+            try:
+                return json.loads(raw)
+            except Exception:
+                pass
+        return [o.strip() for o in raw.split(",") if o.strip()]
 
     # ── Model validators (cross-field) ──────────────────────────────────────────
 
