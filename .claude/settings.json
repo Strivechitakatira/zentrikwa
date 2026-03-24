@@ -7,7 +7,9 @@
       "Skill(conva-feature)",
       "Skill(conva-feature:*)",
       "Skill(devops)",
-      "Skill(devops:*)"
+      "Skill(devops:*)",
+      "Skill(whatsapp-pipeline)",
+      "Skill(whatsapp-pipeline:*)"
     ]
   }
 }
