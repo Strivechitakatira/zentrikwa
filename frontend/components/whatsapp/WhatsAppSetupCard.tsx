@@ -138,13 +138,15 @@ export default function WhatsAppSetupCard({
   // ── Embedded Signup handler ────────────────────────────────────────────────
   const handleEmbeddedSignup = () => {
     setServerError(null);
+    setConnecting(true);
     wabaDataRef.current = null;
 
     window.FB.login(
       async (response: FacebookLoginResponse) => {
+        setConnecting(false);
         if (!response.authResponse?.code) {
           if (response.status !== 'connected') {
-            setServerError('Facebook login was cancelled or failed.');
+            setServerError('Facebook login was cancelled or failed. If no popup appeared, please allow popups for this site and try again.');
           }
           return;
         }
@@ -168,7 +170,6 @@ export default function WhatsAppSetupCard({
           router.refresh();
         } catch (err) {
           setServerError(err instanceof Error ? err.message : 'Connection failed');
-        } finally {
           setConnecting(false);
         }
       },
