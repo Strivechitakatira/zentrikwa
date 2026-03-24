@@ -4,56 +4,58 @@
 
 @layer base {
   :root {
-    --bg-base:          240 10% 97%;
-    --bg-surface:       0 0% 100%;
-    --bg-elevated:      0 0% 100%;
-    --bg-sidebar:       222 47% 8%;
-    --bg-sidebar-hover: 222 47% 13%;
-    --bg-sidebar-active:238 84% 67%;
-    --border:           220 13% 91%;
-    --border-sidebar:   222 47% 14%;
-    --text-primary:     222 47% 8%;
-    --text-secondary:   215 16% 47%;
-    --text-muted:       215 16% 65%;
-    --text-sidebar:     215 20% 65%;
+    /* ── Lush Forest — Light ── */
+    --bg-base:           138 76% 97%;
+    --bg-surface:        0 0% 100%;
+    --bg-elevated:       0 0% 100%;
+    --bg-sidebar:        155 55% 6%;
+    --bg-sidebar-hover:  155 55% 11%;
+    --bg-sidebar-active: 142 72% 29%;
+    --border:            141 60% 88%;
+    --border-sidebar:    155 45% 13%;
+    --text-primary:      155 45% 8%;
+    --text-secondary:    155 15% 40%;
+    --text-muted:        155 10% 60%;
+    --text-sidebar:      145 25% 62%;
     --text-sidebar-active: 0 0% 100%;
-    --accent:           238 84% 67%;
-    --accent-hover:     238 84% 60%;
-    --accent-subtle:    238 84% 97%;
-    --accent-text:      238 84% 60%;
-    --success:          142 71% 45%;
-    --success-subtle:   142 71% 95%;
-    --warning:          38 92% 50%;
-    --warning-subtle:   38 92% 95%;
-    --danger:           0 84% 60%;
-    --danger-subtle:    0 84% 97%;
-    --radius:           0.5rem;
+    --accent:            142 72% 29%;
+    --accent-hover:      142 72% 23%;
+    --accent-subtle:     138 76% 94%;
+    --accent-text:       142 72% 29%;
+    --success:           142 71% 38%;
+    --success-subtle:    138 76% 93%;
+    --warning:           38 92% 50%;
+    --warning-subtle:    48 96% 93%;
+    --danger:            0 84% 58%;
+    --danger-subtle:     0 93% 96%;
+    --radius:            0.5rem;
   }
 
   .dark {
-    --bg-base:          222 47% 6%;
-    --bg-surface:       222 47% 9%;
-    --bg-elevated:      222 47% 12%;
-    --bg-sidebar:       222 47% 5%;
-    --bg-sidebar-hover: 222 47% 10%;
-    --bg-sidebar-active:238 84% 67%;
-    --border:           222 47% 14%;
-    --border-sidebar:   222 47% 12%;
-    --text-primary:     210 40% 98%;
-    --text-secondary:   215 20% 65%;
-    --text-muted:       215 16% 47%;
-    --text-sidebar:     215 20% 60%;
+    /* ── Lush Forest — Dark ── */
+    --bg-base:           155 50% 5%;
+    --bg-surface:        155 45% 8%;
+    --bg-elevated:       155 40% 11%;
+    --bg-sidebar:        155 60% 3%;
+    --bg-sidebar-hover:  155 55% 9%;
+    --bg-sidebar-active: 142 72% 35%;
+    --border:            155 35% 16%;
+    --border-sidebar:    155 45% 11%;
+    --text-primary:      138 40% 96%;
+    --text-secondary:    145 20% 65%;
+    --text-muted:        145 15% 45%;
+    --text-sidebar:      145 20% 58%;
     --text-sidebar-active: 0 0% 100%;
-    --accent:           238 84% 67%;
-    --accent-hover:     238 84% 72%;
-    --accent-subtle:    238 84% 15%;
-    --accent-text:      238 84% 75%;
-    --success:          142 71% 45%;
-    --success-subtle:   142 71% 10%;
-    --warning:          38 92% 50%;
-    --warning-subtle:   38 92% 10%;
-    --danger:           0 84% 60%;
-    --danger-subtle:    0 84% 10%;
+    --accent:            142 72% 42%;
+    --accent-hover:      142 72% 50%;
+    --accent-subtle:     142 60% 12%;
+    --accent-text:       142 72% 55%;
+    --success:           142 71% 45%;
+    --success-subtle:    142 60% 10%;
+    --warning:           38 92% 50%;
+    --warning-subtle:    38 80% 10%;
+    --danger:            0 84% 60%;
+    --danger-subtle:     0 70% 10%;
   }
 }
 
@@ -72,4 +74,43 @@
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 99px; }
   ::-webkit-scrollbar-thumb:hover { background: hsl(var(--text-muted)); }
+}
+
+/* ── Reusable component classes ── */
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-accent-hover focus:outline-none focus:ring-2 focus:ring-accent/50 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-border bg-surface px-4 py-2.5 text-sm font-medium text-txt-primary transition-colors hover:bg-base focus:outline-none focus:ring-2 focus:ring-accent/30 focus:ring-offset-2 disabled:opacity-50;
+  }
+
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-danger/30 bg-danger-subtle px-4 py-2.5 text-sm font-medium text-danger transition-colors hover:bg-danger hover:text-white focus:outline-none focus:ring-2 focus:ring-danger/30 disabled:opacity-50;
+  }
+
+  .input-field {
+    @apply block w-full rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-txt-primary placeholder-txt-muted transition-colors focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20;
+  }
+
+  .label {
+    @apply block text-sm font-medium text-txt-secondary;
+  }
+
+  .card {
+    @apply rounded-xl border border-border bg-surface shadow-card;
+  }
+
+  .link {
+    @apply font-medium text-accent-text hover:underline;
+  }
+
+  .error-box {
+    @apply rounded-lg border border-danger/20 bg-danger-subtle px-4 py-3 text-sm text-danger;
+  }
+
+  .success-box {
+    @apply rounded-lg border border-success/20 bg-success-subtle px-4 py-3 text-sm text-success;
+  }
 }

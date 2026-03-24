@@ -317,7 +317,7 @@ export default function WhatsAppSetupCard({
           <button
             onClick={handleEmbeddedSignup}
             disabled={!fbLoaded || connecting}
-            className="flex w-full items-center justify-center gap-3 rounded-md bg-[#1877F2] px-4 py-3 text-sm font-semibold text-white hover:bg-[#166fe5] disabled:opacity-60"
+            className="btn-primary w-full py-3 text-sm"
           >
             {connecting ? (
               <>
