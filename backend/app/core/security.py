@@ -111,21 +111,76 @@ def decrypt(encrypted: str) -> str:
 
 # ── Supabase JWT validation (used by deps.py) ──────────────────────────────────
 
+_jwks_cache: dict | None = None
+
+
+def _get_supabase_public_keys() -> dict:
+    """
+    Fetch and cache public keys from Supabase JWKS endpoint.
+    Returns a dict of {kid: public_key}.
+    Cached in-process — restart clears cache (acceptable for key rotation).
+    """
+    global _jwks_cache
+    if _jwks_cache is not None:
+        return _jwks_cache
+
+    import httpx
+    import json
+    from jwt.algorithms import ECAlgorithm, HMACAlgorithm
+    from app.core.config import settings
+
+    jwks_url = f"{settings.SUPABASE_URL}/auth/v1/.well-known/jwks.json"
+    try:
+        resp = httpx.get(jwks_url, timeout=10)
+        resp.raise_for_status()
+        keys: dict = {}
+        for key in resp.json().get("keys", []):
+            kid = key.get("kid", "default")
+            alg = key.get("alg", "HS256")
+            if alg == "ES256":
+                keys[kid] = ECAlgorithm.from_jwk(json.dumps(key))
+            elif alg == "HS256":
+                keys[kid] = HMACAlgorithm.from_jwk(json.dumps(key))
+        _jwks_cache = keys
+        return keys
+    except Exception as exc:
+        logger.warning("Failed to fetch JWKS from Supabase, falling back to JWT_SECRET: %s", exc)
+        return {}
+
+
 def verify_supabase_jwt(token: str) -> dict:
     """
     Decode and validate a Supabase-issued JWT.
 
-    Returns the decoded payload dict on success.
-    Raises ``jwt.ExpiredSignatureError`` or ``jwt.InvalidTokenError`` on failure
-    — callers (deps.py) are responsible for converting to HTTPException.
-    """
-    import jwt  # PyJWT — imported here to keep module-level imports minimal
+    Supports both ES256 (new Supabase projects) and HS256 (legacy).
+    Fetches public keys from JWKS endpoint on first call, then caches.
 
+    Returns the decoded payload dict on success.
+    Raises ``jwt.ExpiredSignatureError`` or ``jwt.InvalidTokenError`` on failure.
+    """
+    import jwt  # PyJWT
     from app.core.config import settings
 
+    # Try JWKS-based verification first (ES256 / newer Supabase projects)
+    public_keys = _get_supabase_public_keys()
+    if public_keys:
+        # Get kid from token header to pick the right key
+        header = jwt.get_unverified_header(token)
+        kid = header.get("kid", "default")
+        alg = header.get("alg", "ES256")
+
+        key = public_keys.get(kid) or next(iter(public_keys.values()))
+        return jwt.decode(
+            token,
+            key,
+            algorithms=[alg],
+            audience="authenticated",
+        )
+
+    # Fallback: HS256 with JWT_SECRET (older Supabase projects)
     return jwt.decode(
         token,
         settings.JWT_SECRET,
-        algorithms=[settings.JWT_ALGORITHM],
+        algorithms=["HS256"],
         audience="authenticated",
     )
