@@ -1,5 +1,5 @@
 export const metadata = {
-  title: 'Privacy Policy — Conva',
+  title: 'Privacy Policy — Conva by The Granite',
 };
 
 export default function PrivacyPage() {
@@ -11,7 +11,7 @@ export default function PrivacyPage() {
       <section className="mt-8 space-y-4 text-sm leading-7 text-gray-700">
         <p>
           Conva (&ldquo;we&rdquo;, &ldquo;our&rdquo;, &ldquo;us&rdquo;) is a WhatsApp Business AI
-          platform operated by Zentrik Solutions. This Privacy Policy explains how we collect, use,
+          platform operated by The Granite. This Privacy Policy explains how we collect, use,
           and protect information when you use our service at{' '}
           <strong>ai.thegranite.co.zw</strong>.
         </p>
@@ -90,8 +90,8 @@ export default function PrivacyPage() {
         <p className="mt-3 text-sm leading-7 text-gray-700">
           You may access, correct, or delete your personal data at any time. To exercise these
           rights, contact us at{' '}
-          <a href="mailto:zentriksolutions@gmail.com" className="text-indigo-600 hover:underline">
-            zentriksolutions@gmail.com
+          <a href="mailto:strive@zentriksolutions.com" className="text-indigo-600 hover:underline">
+            strive@zentriksolutions.com
           </a>
           .
         </p>
@@ -100,9 +100,9 @@ export default function PrivacyPage() {
       <section className="mt-8">
         <h2 className="text-lg font-semibold text-gray-900">7. Contact</h2>
         <p className="mt-3 text-sm leading-7 text-gray-700">
-          Zentrik Solutions · Harare, Zimbabwe ·{' '}
-          <a href="mailto:zentriksolutions@gmail.com" className="text-indigo-600 hover:underline">
-            zentriksolutions@gmail.com
+          The Granite · Harare, Zimbabwe ·{' '}
+          <a href="mailto:strive@zentriksolutions.com" className="text-indigo-600 hover:underline">
+            strive@zentriksolutions.com
           </a>
         </p>
       </section>

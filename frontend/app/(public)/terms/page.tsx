@@ -1,5 +1,5 @@
 export const metadata = {
-  title: 'Terms of Service — Conva',
+  title: 'Terms of Service — Conva by The Granite',
 };
 
 export default function TermsPage() {
@@ -11,7 +11,7 @@ export default function TermsPage() {
       <section className="mt-8 space-y-4 text-sm leading-7 text-gray-700">
         <p>
           By accessing or using Conva (&ldquo;the Service&rdquo;) at{' '}
-          <strong>ai.thegranite.co.zw</strong>, operated by Zentrik Solutions, you agree to be
+          <strong>ai.thegranite.co.zw</strong>, operated by The Granite, you agree to be
           bound by these Terms of Service. If you do not agree, do not use the Service.
         </p>
       </section>
@@ -48,7 +48,7 @@ export default function TermsPage() {
         <h2 className="text-lg font-semibold text-gray-900">4. WhatsApp & Meta Compliance</h2>
         <p className="mt-3 text-sm leading-7 text-gray-700">
           You are solely responsible for ensuring your use of WhatsApp through Conva complies with
-          Meta&apos;s terms, policies, and applicable law. Zentrik Solutions is not liable for any
+          Meta&apos;s terms, policies, and applicable law. The Granite is not liable for any
           suspension or termination of your WhatsApp Business Account by Meta.
         </p>
       </section>
@@ -76,7 +76,7 @@ export default function TermsPage() {
       <section className="mt-8">
         <h2 className="text-lg font-semibold text-gray-900">7. Limitation of Liability</h2>
         <p className="mt-3 text-sm leading-7 text-gray-700">
-          To the maximum extent permitted by law, Zentrik Solutions shall not be liable for any
+          To the maximum extent permitted by law, The Granite shall not be liable for any
           indirect, incidental, or consequential damages arising from your use of the Service,
           including loss of data or business interruption.
         </p>
@@ -101,9 +101,9 @@ export default function TermsPage() {
       <section className="mt-8">
         <h2 className="text-lg font-semibold text-gray-900">10. Contact</h2>
         <p className="mt-3 text-sm leading-7 text-gray-700">
-          Zentrik Solutions · Harare, Zimbabwe ·{' '}
-          <a href="mailto:zentriksolutions@gmail.com" className="text-indigo-600 hover:underline">
-            zentriksolutions@gmail.com
+          The Granite · Harare, Zimbabwe ·{' '}
+          <a href="mailto:strive@zentriksolutions.com" className="text-indigo-600 hover:underline">
+            strive@zentriksolutions.com
           </a>
         </p>
       </section>
