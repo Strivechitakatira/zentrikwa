@@ -17,6 +17,7 @@ from fastapi import APIRouter, HTTPException, Query, Request, Response, status
 
 from app.core.config import settings
 from app.core.security import verify_meta_signature
+from app.models.webhooks import WebhookPayload
 
 logger = logging.getLogger(__name__)
 
@@ -80,8 +81,19 @@ async def whatsapp_webhook_receive(request: Request) -> dict:
         )
         return {"status": "ignored"}
 
-    # TODO (Phase 2): parse payload → save message → enqueue Celery task
-    # For now, log the event and return 200 immediately.
-    logger.info("WhatsApp webhook received (signature valid), %d bytes", len(body))
+    # Parse payload
+    try:
+        payload = WebhookPayload.model_validate_json(body)
+    except Exception:
+        logger.warning("WhatsApp webhook: malformed JSON — discarding")
+        return {"status": "ok"}
+
+    # Process asynchronously — must not block (5-second rule)
+    from app.services.webhooks import process_webhook_payload  # noqa: PLC0415
+
+    try:
+        await process_webhook_payload(payload)
+    except Exception:
+        logger.exception("Webhook processor raised an unexpected error")
 
     return {"status": "ok"}
