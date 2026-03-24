@@ -1,3 +1,75 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-base:          240 10% 97%;
+    --bg-surface:       0 0% 100%;
+    --bg-elevated:      0 0% 100%;
+    --bg-sidebar:       222 47% 8%;
+    --bg-sidebar-hover: 222 47% 13%;
+    --bg-sidebar-active:238 84% 67%;
+    --border:           220 13% 91%;
+    --border-sidebar:   222 47% 14%;
+    --text-primary:     222 47% 8%;
+    --text-secondary:   215 16% 47%;
+    --text-muted:       215 16% 65%;
+    --text-sidebar:     215 20% 65%;
+    --text-sidebar-active: 0 0% 100%;
+    --accent:           238 84% 67%;
+    --accent-hover:     238 84% 60%;
+    --accent-subtle:    238 84% 97%;
+    --accent-text:      238 84% 60%;
+    --success:          142 71% 45%;
+    --success-subtle:   142 71% 95%;
+    --warning:          38 92% 50%;
+    --warning-subtle:   38 92% 95%;
+    --danger:           0 84% 60%;
+    --danger-subtle:    0 84% 97%;
+    --radius:           0.5rem;
+  }
+
+  .dark {
+    --bg-base:          222 47% 6%;
+    --bg-surface:       222 47% 9%;
+    --bg-elevated:      222 47% 12%;
+    --bg-sidebar:       222 47% 5%;
+    --bg-sidebar-hover: 222 47% 10%;
+    --bg-sidebar-active:238 84% 67%;
+    --border:           222 47% 14%;
+    --border-sidebar:   222 47% 12%;
+    --text-primary:     210 40% 98%;
+    --text-secondary:   215 20% 65%;
+    --text-muted:       215 16% 47%;
+    --text-sidebar:     215 20% 60%;
+    --text-sidebar-active: 0 0% 100%;
+    --accent:           238 84% 67%;
+    --accent-hover:     238 84% 72%;
+    --accent-subtle:    238 84% 15%;
+    --accent-text:      238 84% 75%;
+    --success:          142 71% 45%;
+    --success-subtle:   142 71% 10%;
+    --warning:          38 92% 50%;
+    --warning-subtle:   38 92% 10%;
+    --danger:           0 84% 60%;
+    --danger-subtle:    0 84% 10%;
+  }
+}
+
+@layer base {
+  * { border-color: hsl(var(--border)); }
+
+  body {
+    background-color: hsl(var(--bg-base));
+    color: hsl(var(--text-primary));
+    font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 99px; }
+  ::-webkit-scrollbar-thumb:hover { background: hsl(var(--text-muted)); }
+}
