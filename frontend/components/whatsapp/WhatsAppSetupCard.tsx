@@ -150,37 +150,36 @@ export default function WhatsAppSetupCard({
     }, 6000);
 
     window.FB.login(
-      async (response: FacebookLoginResponse) => {
+      (response: FacebookLoginResponse) => {
         clearTimeout(popupTimeout);
         setConnecting(false);
         if (!response.authResponse?.code) {
           if (response.status !== 'connected') {
-            setServerError('Facebook login was cancelled or failed. If no popup appeared, please allow popups for this site and try again.');
+            setServerError('Facebook login was cancelled or failed.');
           }
           return;
         }
 
         const wabaData = wabaDataRef.current;
         if (!wabaData) {
-          setServerError(
-            'Could not capture WhatsApp account details. Please try again or use manual setup.',
-          );
+          setServerError('Could not capture WhatsApp account details. Please try again.');
           return;
         }
 
         setConnecting(true);
-        try {
-          const account = await completeEmbeddedSignup(token, {
-            code: response.authResponse.code,
-            phone_number_id: wabaData.phone_number_id,
-            waba_id: wabaData.waba_id,
+        completeEmbeddedSignup(token, {
+          code: response.authResponse.code,
+          phone_number_id: wabaData.phone_number_id,
+          waba_id: wabaData.waba_id,
+        })
+          .then((account) => {
+            setStatus({ connected: true, account });
+            router.refresh();
+          })
+          .catch((err) => {
+            setServerError(err instanceof Error ? err.message : 'Connection failed');
+            setConnecting(false);
           });
-          setStatus({ connected: true, account });
-          router.refresh();
-        } catch (err) {
-          setServerError(err instanceof Error ? err.message : 'Connection failed');
-          setConnecting(false);
-        }
       },
       {
         scope: 'whatsapp_business_management,whatsapp_business_messaging',
