@@ -15,6 +15,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY backend/ .
 
 RUN chown -R appuser:appuser /app && chmod +x /app/start.sh
+
 USER appuser
 
 EXPOSE 8000
