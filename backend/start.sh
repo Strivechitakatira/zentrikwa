@@ -1,3 +1,6 @@
+echo "START.SH EXECUTED"
+env | grep PORT
+
 #!/bin/sh
 
 # Fail fast if anything breaks
